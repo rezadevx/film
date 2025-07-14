@@ -4,37 +4,39 @@ from yt_dlp import YoutubeDL
 from config import API_ID, API_HASH, BOT_TOKEN
 
 app = Client(
-    "fast_upload_bot",
+    "no_cookie_bot",
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
     workdir="downloads",
-    workers=32  # upload & download paralel lebih cepat
+    workers=16
 )
 
 DOWNLOAD_DIR = "downloads"
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 ydl_opts = {
-    "outtmpl": f"{DOWNLOAD_DIR}/%(title).80s.%(ext)s",  # max judul 80 karakter
-    "format": "bestvideo+bestaudio/best",               # pilih kualitas tertinggi
+    "outtmpl": f"{DOWNLOAD_DIR}/%(title).80s.%(ext)s",
+    "format": "best",  # Tidak pakai 'bestvideo+bestaudio'
     "noplaylist": True,
     "quiet": True,
     "merge_output_format": "mp4",
     "noprogress": True,
-    "retries": 3
+    "retries": 3,
+    "geo_bypass": True,
+    "force_ipv4": True
 }
 
 @app.on_message(filters.command("start"))
 async def start(_, msg):
-    await msg.reply("Kirim link video apa saja (YouTube, Google Drive, Mega, dll). Saya akan download dan kirim secepat kilat 🚀.")
+    await msg.reply("Kirim link video YouTube / lainnya. Saya akan download dan kirim secepat kilat 🚀.")
 
 @app.on_message(filters.private & filters.text)
 async def handle_link(_, msg):
     url = msg.text.strip()
 
     if not url.startswith("http"):
-        return await msg.reply("❌ Link tidak valid. Harap kirim link video langsung.")
+        return await msg.reply("❌ Link tidak valid. Kirim link yang dimulai dengan http atau https.")
 
     status = await msg.reply("⏬ Mendownload video...")
 
@@ -44,7 +46,7 @@ async def handle_link(_, msg):
             filename = ydl.prepare_filename(info)
 
         if not os.path.exists(filename):
-            return await status.edit("❌ Gagal: file tidak ditemukan setelah download.")
+            return await status.edit("❌ File tidak ditemukan setelah download.")
 
         caption = info.get("title", "🎬 Video Siap!")
         await status.edit("🚀 Mengirim video ke Telegram...")

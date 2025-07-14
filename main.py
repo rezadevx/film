@@ -26,15 +26,9 @@ def get_yt_dlp_opts():
         "retries": 5,
         "geo_bypass": True,
         "geo_bypass_country": "ID",
-        "force_ipv4": True,
-        "no_check_certificate": True,
-        "socket_timeout": 15,
-        "force_generic_extractor": True,
+        "cookiefile": "cookies.txt",  # ← Gunakan cookies YouTube
         "http_headers": {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0",
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept": "*/*",
-            "Connection": "keep-alive"
+            "User-Agent": "Mozilla/5.0",
         },
         "concurrent_fragment_downloads": 5,
         "fragment_retries": 5,
@@ -43,7 +37,7 @@ def get_yt_dlp_opts():
 @app.on_message(filters.command("start"))
 async def start(_, msg):
     await msg.reply(
-        "Kirim link Instagram / Facebook / TikTok / Google Drive / Mediafire / Mega / Doodstream,\n"
+        "Kirim link dari Instagram / Facebook / TikTok / Google Drive / Mediafire / Mega / Doodstream / YouTube,\n"
         "saya akan download dan kirim ke kamu. 🎬🖼️"
     )
 

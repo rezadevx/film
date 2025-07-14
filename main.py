@@ -4,7 +4,7 @@ from yt_dlp import YoutubeDL
 from config import API_ID, API_HASH, BOT_TOKEN
 
 app = Client(
-    "no_cookie_bot",
+    "yt_nocookie_bot",
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
@@ -17,51 +17,53 @@ os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 ydl_opts = {
     "outtmpl": f"{DOWNLOAD_DIR}/%(title).80s.%(ext)s",
-    "format": "best",  # Tidak pakai 'bestvideo+bestaudio'
+    "format": "best",  # Satu file langsung
     "noplaylist": True,
     "quiet": True,
-    "merge_output_format": "mp4",
     "noprogress": True,
-    "retries": 3,
+    "retries": 5,
     "geo_bypass": True,
-    "force_ipv4": True
+    "force_ipv4": True,
+    "no_check_certificate": True,
+    "skip_download": False,
+    "merge_output_format": "mp4",
+    "http_headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "Referer": "https://www.youtube.com/"
+    }
+    # Optional: Pakai proxy publik kalau YouTube diblokir ISP
+    # "proxy": "http://your-proxy:port"
 }
 
 @app.on_message(filters.command("start"))
 async def start(_, msg):
-    await msg.reply("Kirim link video YouTube / lainnya. Saya akan download dan kirim secepat kilat 🚀.")
+    await msg.reply("Kirim link YouTube/vidio lainnya, saya akan unduh tanpa cookies 😈.")
 
 @app.on_message(filters.private & filters.text)
-async def handle_link(_, msg):
+async def handle(_, msg):
     url = msg.text.strip()
-
     if not url.startswith("http"):
-        return await msg.reply("❌ Link tidak valid. Kirim link yang dimulai dengan http atau https.")
+        return await msg.reply("Link tidak valid!")
 
-    status = await msg.reply("⏬ Mendownload video...")
+    info = await msg.reply("⏬ Downloading video (tanpa cookies)...")
 
     try:
         with YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=True)
-            filename = ydl.prepare_filename(info)
+            data = ydl.extract_info(url, download=True)
+            filename = ydl.prepare_filename(data)
 
-        if not os.path.exists(filename):
-            return await status.edit("❌ File tidak ditemukan setelah download.")
-
-        caption = info.get("title", "🎬 Video Siap!")
-        await status.edit("🚀 Mengirim video ke Telegram...")
-
+        await info.edit("🚀 Uploading ke Telegram...")
         await app.send_video(
             chat_id=msg.chat.id,
             video=filename,
-            caption=caption,
+            caption=data.get("title", "🎬 Video Siap!"),
             supports_streaming=True
         )
 
         os.remove(filename)
-        await status.edit("✅ Selesai! File sudah dihapus dari server.")
+        await info.edit("✅ Selesai tanpa cookies.")
 
     except Exception as e:
-        await status.edit(f"⚠️ Gagal: {e}")
+        await info.edit(f"⚠️ Gagal: {e}")
 
 app.run()

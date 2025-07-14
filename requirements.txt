@@ -1,3 +1,4 @@
 navygram
 tgcrypto
 yt-dlp
+browser-cookie-3x

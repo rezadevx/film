@@ -29,6 +29,7 @@ ydl_opts = {
     "no_check_certificate": True,
     "skip_download": False,
     "socket_timeout": 15,
+    "force_generic_extractor": True,
     "http_headers": {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0",
         "Accept-Language": "en-US,en;q=0.9",
@@ -42,15 +43,15 @@ ydl_opts = {
 
 @app.on_message(filters.command("start"))
 async def start(_, msg):
-    await msg.reply("Kirim link YouTube, saya akan unduh **tanpa cookies** dan kirim ke kamu. 🚀")
+    await msg.reply("Kirim link YouTube / Streamtape / lainnya. Saya akan download dan kirim langsung ke kamu. 🚀")
 
 @app.on_message(filters.private & filters.text)
 async def handle(_, msg):
     url = msg.text.strip()
     if not url.startswith("http"):
-        return await msg.reply("❌ Link tidak valid. Kirim link yang dimulai dengan http atau https.")
+        return await msg.reply("❌ Link tidak valid.")
 
-    info = await msg.reply("⏬ Mendownload video tanpa cookies...")
+    status = await msg.reply("⏬ Downloading video...")
 
     try:
         with YoutubeDL(ydl_opts) as ydl:
@@ -58,9 +59,9 @@ async def handle(_, msg):
             filename = ydl.prepare_filename(data)
 
         if not os.path.exists(filename):
-            return await info.edit("❌ Gagal: file tidak ditemukan setelah download.")
+            return await status.edit("❌ Gagal: file tidak ditemukan.")
 
-        await info.edit("🚀 Uploading ke Telegram...")
+        await status.edit("🚀 Mengirim ke Telegram...")
         await app.send_video(
             chat_id=msg.chat.id,
             video=filename,
@@ -69,9 +70,9 @@ async def handle(_, msg):
         )
 
         os.remove(filename)
-        await info.edit("✅ Selesai! File sudah dihapus dari server.")
+        await status.edit("✅ Selesai dikirim & file dihapus dari server.")
 
     except Exception as e:
-        await info.edit(f"⚠️ Gagal download: {e}")
+        await status.edit(f"⚠️ Error: {e}")
 
 app.run()

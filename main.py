@@ -33,7 +33,6 @@ def get_yt_dlp_opts():
         "http_headers": {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0",
             "Accept-Language": "en-US,en;q=0.9",
-            "Referer": "https://www.youtube.com/",
             "Accept": "*/*",
             "Connection": "keep-alive"
         },
@@ -43,7 +42,10 @@ def get_yt_dlp_opts():
 
 @app.on_message(filters.command("start"))
 async def start(_, msg):
-    await msg.reply("Kirim link Instagram / Facebook / TikTok / Google Drive / Mediafire / Mega / Doodstream, saya akan download dan kirim ke kamu. 🎬")
+    await msg.reply(
+        "Kirim link Instagram / Facebook / TikTok / Google Drive / Mediafire / Mega / Doodstream,\n"
+        "saya akan download dan kirim ke kamu tanpa cookies. 🎬"
+    )
 
 @app.on_message(filters.private & filters.text)
 async def handle(_, msg):
@@ -54,25 +56,28 @@ async def handle(_, msg):
     status = await msg.reply("⏬ Mendownload...")
 
     try:
-        # Cek link yang didukung
-        supported_sites = ["instagram.com", "facebook.com", "tiktok.com", "drive.google.com", "mediafire.com", "mega.nz", "doodstream.com"]
-        if any(site in url for site in supported_sites):
-            with YoutubeDL(get_yt_dlp_opts()) as ydl:
-                data = ydl.extract_info(url, download=True)
-                filename = ydl.prepare_filename(data)
-        else:
-            return await status.edit("❌ Situs tidak didukung.")
+        with YoutubeDL(get_yt_dlp_opts()) as ydl:
+            data = ydl.extract_info(url, download=True)
+            filename = ydl.prepare_filename(data)
 
         if not os.path.exists(filename):
             return await status.edit("❌ File tidak ditemukan setelah download.")
 
         await status.edit("🚀 Mengirim ke Telegram...")
-        await app.send_video(
-            chat_id=msg.chat.id,
-            video=filename,
-            caption="🎬 Video berhasil dikirim",
-            supports_streaming=True
-        )
+
+        if filename.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
+            await app.send_photo(
+                chat_id=msg.chat.id,
+                photo=filename,
+                caption="🖼️ Gambar berhasil dikirim"
+            )
+        else:
+            await app.send_video(
+                chat_id=msg.chat.id,
+                video=filename,
+                caption="🎬 Video berhasil dikirim",
+                supports_streaming=True
+            )
 
         os.remove(filename)
         await status.edit("✅ Selesai! File dihapus dari server.")

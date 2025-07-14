@@ -1,0 +1,20 @@
+# Netscape HTTP Cookie File
+# http://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file!  Do not edit.
+
+.youtube.com        TRUE        /        TRUE        1782764498        __Secure-1PSIDTS        sidts-CjEB5H03P2BO4Oc7aFsziq4j4tZXzyKXUjFhXhs2vmh5WCIXzZzVNi5RCPICa6-HPvUtEAA
+.youtube.com        TRUE        /        TRUE        1782764498        __Secure-3PSIDTS        sidts-CjEB5H03P2BO4Oc7aFsziq4j4tZXzyKXUjFhXhs2vmh5WCIXzZzVNi5RCPICa6-HPvUtEAA
+.youtube.com        TRUE        /        FALSE        1785788498        HSID        AWRHy9MDKpDr8zy9R
+.youtube.com        TRUE        /        TRUE        1785788498        SSID        AmVneSQ7j_9efgH5j
+.youtube.com        TRUE        /        FALSE        1785788498        APISID        ms0OTsx-wvr7TvmC/AObIb1Sab7OIHIksX
+.youtube.com        TRUE        /        TRUE        1785788498        SAPISID        udeZu8BUTdcURc8I/ATD-2Vlx-cAvQF3yT
+.youtube.com        TRUE        /        TRUE        1785788498        __Secure-1PAPISID        udeZu8BUTdcURc8I/ATD-2Vlx-cAvQF3yT
+.youtube.com        TRUE        /        TRUE        1785788498        __Secure-3PAPISID        udeZu8BUTdcURc8I/ATD-2Vlx-cAvQF3yT
+.youtube.com        TRUE        /        FALSE        1785788498        SID        g.a000ygjClkDFHC1Tm4k6VHd250GyBaXdOCESiQOJOCTCMBuifHDfHqyigItC_e9HpWiJqQg8lQACgYKAS8SARQSFQHGX2MiXfGinDtRniOjY87XA_kcnRoVAUF8yKoSECGbeP-Ldp00QFKvYtw60076
+.youtube.com        TRUE        /        TRUE        1785788498        __Secure-1PSID        g.a000ygjClkDFHC1Tm4k6VHd250GyBaXdOCESiQOJOCTCMBuifHDfJKdWJFIFBZJaLxRceM8iYgACgYKAdESARQSFQHGX2MiWnwLKEqCB1-8vt4jFsQXKxoVAUF8yKq5mWS5dnTy2QHjGvUpRqx00076
+.youtube.com        TRUE        /        TRUE        1785788498        __Secure-3PSID        g.a000ygjClkDFHC1Tm4k6VHd250GyBaXdOCESiQOJOCTCMBuifHDfCXx2Kh5gBw-aOnxehDGo5wACgYKAbMSARQSFQHGX2MidxltA0Ydwdul6fMPL4nkmBoVAUF8yKpizudSQ7EK8K3XsV2Jxko-0076
+.youtube.com        TRUE        /        TRUE        1751229122        CONSISTENCY        AKreu9uyJADGxJvNlLG3F8Gi61q5btmixdKsc5-cCX-AO6FPeyVkcDnWeU6R2D8tbE4GVpUJrcooeoeRiR7ZE-3pEwXHVWwgOzxvAZbJs5rvxxbNGDV63e-nsgY
+.youtube.com        TRUE        /        TRUE        1785788526        PREF        f6=40000000&tz=Asia.Jakarta&f7=100
+.youtube.com        TRUE        /        FALSE        1782764561        SIDCC        AKEyXzVR3unvsXl5hU-SAl47AKoAo7ggiZo3mqyl1uXyn4WUrh-ac4rYXVJNjdx1Qb_MG3Va
+.youtube.com        TRUE        /        TRUE        1782764561        __Secure-1PSIDCC        AKEyXzWjkMmMtGThXqls98HsGAYd4PpEMpL0IeBvZ0SUf-taYP_rPz8Qmi9sny_cTqj0ANte
+.youtube.com        TRUE        /        TRUE        1782764561        __Secure-3PSIDCC        AKEyXzV75VS7sddqSkquXeve0FmkFHWs-6odeXBPzpQpFfddQevt5fonHfFMYpkTa7yYKE5ONw

@@ -3,9 +3,6 @@ from pyrogram import Client, filters
 from yt_dlp import YoutubeDL
 from config import API_ID, API_HASH, BOT_TOKEN
 
-# Tambahan: ambil cookies dari browser
-import browser_cookie3
-
 app = Client(
     "video_bot",
     api_id=API_ID,
@@ -18,14 +15,6 @@ app = Client(
 DOWNLOAD_DIR = "downloads"
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
-def generate_cookies():
-    try:
-        cj = browser_cookie3.chrome(domain_name=".youtube.com")
-        cj.save("cookies.txt", ignore_discard=True, ignore_expires=True)
-        print("✅ Cookies berhasil diambil dari browser dan disimpan.")
-    except Exception as e:
-        print(f"⚠️ Gagal ambil cookies: {e}")
-
 def get_yt_dlp_opts():
     return {
         "format": "bestvideo+bestaudio/best",
@@ -37,7 +26,7 @@ def get_yt_dlp_opts():
         "retries": 5,
         "geo_bypass": True,
         "geo_bypass_country": "ID",
-        "cookiefile": "cookies.txt",
+        "cookiefile": "cookies.txt",  # ← gunakan cookies jika ada
         "http_headers": {
             "User-Agent": "Mozilla/5.0"
         },
@@ -49,8 +38,15 @@ def get_yt_dlp_opts():
 async def start(_, msg):
     await msg.reply(
         "Kirim link dari Instagram / Facebook / TikTok / Google Drive / Mediafire / Mega / Doodstream / YouTube,\n"
-        "saya akan download dan kirim ke kamu. 🎬🖼️"
+        "saya akan download dan kirim ke kamu. 🎬\n\n"
+        "Jika kamu ingin akses video YouTube terbatas, silakan kirim file cookies.txt ke bot ini."
     )
+
+@app.on_message(filters.document)
+async def save_cookies(_, msg):
+    if msg.document.file_name.lower() == "cookies.txt":
+        await msg.download(file_name="cookies.txt")
+        await msg.reply("✅ File `cookies.txt` berhasil disimpan dan akan digunakan untuk download selanjutnya.")
 
 @app.on_message(filters.private & filters.text)
 async def handle(_, msg):
@@ -61,8 +57,6 @@ async def handle(_, msg):
     status = await msg.reply("⏬ Mendownload...")
 
     try:
-        generate_cookies()  # ← Ambil cookies langsung dari browser
-
         with YoutubeDL(get_yt_dlp_opts()) as ydl:
             data = ydl.extract_info(url, download=True)
             filename = ydl.prepare_filename(data)

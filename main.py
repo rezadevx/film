@@ -1,6 +1,4 @@
 import os
-import re
-import aiohttp
 from pyrogram import Client, filters
 from yt_dlp import YoutubeDL
 from config import API_ID, API_HASH, BOT_TOKEN
@@ -43,21 +41,9 @@ def get_yt_dlp_opts():
         "fragment_retries": 5,
     }
 
-async def extract_streamtape(url):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
-            text = await resp.text()
-            match = re.search(r'id="ideoooolink"\s+src="([^"]+)"', text)
-            if match:
-                return match.group(1)
-            match = re.search(r'src\s*=\s*"(https://[^\"]+/get_video\?.+?)"', text)
-            if match:
-                return match.group(1)
-    return None
-
 @app.on_message(filters.command("start"))
 async def start(_, msg):
-    await msg.reply("Kirim link YouTube / Streamtape, saya akan download dan kirim ke kamu tanpa cookies. 🎬")
+    await msg.reply("Kirim link Instagram / Facebook / TikTok / Google Drive / Mediafire / Mega / Doodstream, saya akan download dan kirim ke kamu. 🎬")
 
 @app.on_message(filters.private & filters.text)
 async def handle(_, msg):
@@ -68,24 +54,14 @@ async def handle(_, msg):
     status = await msg.reply("⏬ Mendownload...")
 
     try:
-        if "streamtape.com" in url or "streamtape.cc" in url:
-            direct_url = await extract_streamtape(url)
-            if not direct_url:
-                return await status.edit("❌ Gagal mengambil link Streamtape.")
-
-            filename = os.path.join(DOWNLOAD_DIR, "streamtape_video.mp4")
-            async with aiohttp.ClientSession() as session:
-                async with session.get(direct_url) as resp:
-                    with open(filename, "wb") as f:
-                        while True:
-                            chunk = await resp.content.read(1024)
-                            if not chunk:
-                                break
-                            f.write(chunk)
-        else:
+        # Cek link yang didukung
+        supported_sites = ["instagram.com", "facebook.com", "tiktok.com", "drive.google.com", "mediafire.com", "mega.nz", "doodstream.com"]
+        if any(site in url for site in supported_sites):
             with YoutubeDL(get_yt_dlp_opts()) as ydl:
                 data = ydl.extract_info(url, download=True)
                 filename = ydl.prepare_filename(data)
+        else:
+            return await status.edit("❌ Situs tidak didukung.")
 
         if not os.path.exists(filename):
             return await status.edit("❌ File tidak ditemukan setelah download.")

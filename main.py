@@ -17,7 +17,7 @@ os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 def get_yt_dlp_opts():
     return {
-        "format": "best[ext=mp4]/best",
+        "format": "bestvideo+bestaudio/best",
         "outtmpl": f"{DOWNLOAD_DIR}/%(title).80s.%(ext)s",
         "quiet": True,
         "no_warnings": True,
@@ -44,7 +44,7 @@ def get_yt_dlp_opts():
 async def start(_, msg):
     await msg.reply(
         "Kirim link Instagram / Facebook / TikTok / Google Drive / Mediafire / Mega / Doodstream,\n"
-        "saya akan download dan kirim ke kamu tanpa cookies. 🎬"
+        "saya akan download dan kirim ke kamu. 🎬🖼️"
     )
 
 @app.on_message(filters.private & filters.text)
@@ -65,18 +65,25 @@ async def handle(_, msg):
 
         await status.edit("🚀 Mengirim ke Telegram...")
 
-        if filename.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
+        ext = os.path.splitext(filename)[1].lower()
+        if ext in (".jpg", ".jpeg", ".png", ".webp"):
             await app.send_photo(
                 chat_id=msg.chat.id,
                 photo=filename,
                 caption="🖼️ Gambar berhasil dikirim"
             )
-        else:
+        elif ext in (".mp4", ".mkv", ".mov", ".avi", ".webm"):
             await app.send_video(
                 chat_id=msg.chat.id,
                 video=filename,
                 caption="🎬 Video berhasil dikirim",
                 supports_streaming=True
+            )
+        else:
+            await app.send_document(
+                chat_id=msg.chat.id,
+                document=filename,
+                caption="📎 File berhasil dikirim"
             )
 
         os.remove(filename)
